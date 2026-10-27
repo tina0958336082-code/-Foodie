@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="食光 Foodie 美食電商平台，探索台式美食、甜點、飲品與冷凍食品。">
+  <title>食光 Foodie｜美食購物商城</title>
+  <style>
+    :root {
+      --orange: #e96b37;
+      --orange-dark: #c95427;
+      --cream: #fff8f0;
+      --peach: #fff0df;
+      --brown: #492b20;
+      --muted: #8d7466;
+      --line: #f0dfd2;
+      --white: #fff;
+      --shadow: 0 10px 30px rgba(73,43,32,.08);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", sans-serif; background: var(--cream); color: var(--brown); }
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
+    a { color: inherit; text-decoration: none; }
+    .container { width: min(1120px, calc(100% - 36px)); margin: 0 auto; }
+    header { position: sticky; top: 0; z-index: 20; background: rgba(255,248,240,.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+    .nav { min-height: 76px; display: flex; align-items: center; gap: 22px; }
+    .brand { display: flex; align-items: center; gap: 11px; min-width: 180px; }
+    .brand-mark { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 14px; background: var(--orange); color: white; font-size: 24px; }
+    .brand strong { display: block; font-size: 22px; letter-spacing: .3px; }
+    .brand small { display: block; color: var(--muted); font-size: 11px; margin-top: 2px; }
+    .search { flex: 1; display: flex; align-items: center; gap: 10px; background: white; border: 1px solid var(--line); border-radius: 999px; padding: 0 16px; min-width: 120px; }
+    .search input { width: 100%; border: 0; outline: 0; padding: 13px 0; background: transparent; color: var(--brown); }
+    .cart-button, .primary-button { border: 0; background: var(--orange); color: white; padding: 12px 17px; border-radius: 999px; font-weight: 700; transition: .2s; }
+    .cart-button:hover, .primary-button:hover { background: var(--orange-dark); transform: translateY(-1px); }
+    .cart-count { display: inline-grid; place-items: center; min-width: 22px; height: 22px; border-radius: 50%; background: white; color: var(--orange-dark); margin-left: 5px; font-size: 12px; }
+    .hero { padding: 38px 0 28px; }
+    .hero-panel { overflow: hidden; position: relative; display: grid; grid-template-columns: 1.1fr .9fr; align-items: center; gap: 25px; min-height: 330px; padding: clamp(25px,5vw,58px); border-radius: 28px; background: var(--peach); }
+    .eyebrow { color: var(--orange-dark); font-weight: 800; letter-spacing: 1.5px; font-size: 13px; }
+    h1 { font-size: clamp(34px, 5vw, 56px); line-height: 1.16; margin: 13px 0 16px; letter-spacing: -1px; }
+    .hero p { max-width: 490px; color: #76594b; line-height: 1.9; margin: 0 0 24px; }
+    .hero-image { width: 100%; height: 260px; object-fit: cover; border-radius: 22px; box-shadow: var(--shadow); }
+    .section { padding: 22px 0 34px; }
+    .section-heading { display: flex; align-items: end; justify-content: space-between; gap: 14px; margin-bottom: 20px; }
+    h2 { font-size: clamp(23px,3vw,30px); margin: 0; }
+    .section-heading p { margin: 6px 0 0; color: var(--muted); font-size: 14px; }
+    .categories { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; }
+    .category { display: flex; align-items: center; gap: 13px; padding: 15px; background: white; border: 1px solid var(--line); border-radius: 18px; text-align: left; transition: .2s; color: var(--brown); }
+    .category:hover, .category.active { border-color: var(--orange); box-shadow: var(--shadow); transform: translateY(-2px); }
+    .category-emoji { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 15px; background: var(--peach); font-size: 25px; flex-shrink: 0; }
+    .category strong { display: block; font-size: 15px; }
+    .category small { display: block; color: var(--muted); margin-top: 4px; font-size: 12px; }
+    .toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .toolbar select { border: 1px solid var(--line); background: white; color: var(--brown); padding: 10px 13px; border-radius: 12px; outline-color: var(--orange); }
+    .products { display: grid; grid-template-columns: repeat(4,1fr); gap: 18px; }
+    .product { background: white; border: 1px solid var(--line); border-radius: 20px; overflow: hidden; box-shadow: 0 4px 15px rgba(73,43,32,.035); transition: .2s; }
+    .product:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+    .product-image-wrap { position: relative; background: var(--peach); }
+    .product-image { display: block; width: 100%; aspect-ratio: 1.18; object-fit: cover; }
+    .tag { position: absolute; left: 12px; top: 12px; background: white; color: var(--orange-dark); font-size: 11px; font-weight: 800; border-radius: 999px; padding: 6px 9px; }
+    .product-body { padding: 15px; }
+    .product-body h3 { font-size: 16px; margin: 0 0 7px; }
+    .product-desc { color: var(--muted); font-size: 12px; line-height: 1.6; min-height: 20px; }
+    .product-bottom { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 14px; }
+    .price { font-size: 22px; font-weight: 850; color: var(--orange-dark); }
+    .price small { font-size: 12px; font-weight: 500; }
+    .add-button { border: 0; width: 38px; height: 38px; border-radius: 13px; background: var(--peach); color: var(--orange-dark); font-size: 24px; font-weight: 500; }
+    .add-button:hover { background: var(--orange); color: white; }
+    .empty { display: none; padding: 35px; text-align: center; color: var(--muted); background: white; border: 1px dashed var(--line); border-radius: 18px; }
+    .benefits { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; padding: 28px; background: #fbe8d8; border-radius: 22px; }
+    .benefit { display: flex; align-items: center; gap: 13px; }
+    .benefit-icon { font-size: 27px; }
+    .benefit strong { display: block; }
+    .benefit span { color: #76594b; font-size: 12px; display: block; margin-top: 4px; line-height: 1.6; }
+    footer { background: var(--brown); color: white; padding: 30px 0; margin-top: 30px; }
+    .footer-inner { display: flex; justify-content: space-between; gap: 20px; align-items: center; }
+    footer p { color: #e4cbbd; font-size: 13px; margin: 6px 0 0; }
+    .toast { position: fixed; bottom: 22px; left: 50%; transform: translate(-50%, 20px); opacity: 0; pointer-events: none; z-index: 50; background: var(--brown); color: white; padding: 13px 18px; border-radius: 999px; box-shadow: var(--shadow); transition: .25s; }
+    .toast.show { opacity: 1; transform: translate(-50%,0); }
+    .cart-panel { position: fixed; inset: 0; z-index: 40; display: none; }
+    .cart-panel.open { display: block; }
+    .cart-backdrop { position: absolute; inset: 0; background: rgba(30,20,15,.42); }
+    .cart-drawer { position: absolute; right: 0; top: 0; height: 100%; width: min(430px,100%); background: var(--cream); padding: 24px; display: flex; flex-direction: column; box-shadow: -10px 0 30px rgba(0,0,0,.12); }
+    .cart-head { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line); padding-bottom: 18px; }
+    .cart-head h2 { font-size: 24px; }
+    .close-button { border: 0; background: var(--peach); color: var(--brown); border-radius: 50%; width: 38px; height: 38px; font-size: 21px; }
+    .cart-items { overflow: auto; flex: 1; padding: 12px 0; }
+    .cart-item { display: grid; grid-template-columns: 65px 1fr auto; gap: 12px; align-items: center; padding: 13px 0; border-bottom: 1px solid var(--line); }
+    .cart-item img { width: 65px; height: 65px; object-fit: cover; border-radius: 12px; }
+    .cart-item strong { display: block; font-size: 14px; }
+    .cart-item small { color: var(--muted); display: block; margin-top: 5px; }
+    .qty { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+    .qty button { border: 1px solid var(--line); background: white; border-radius: 7px; width: 25px; height: 25px; }
+    .remove { color: var(--orange-dark); border: 0; background: transparent; font-size: 12px; }
+    .cart-total { border-top: 1px solid var(--line); padding-top: 18px; }
+    .total-line { display: flex; justify-content: space-between; margin-bottom: 10px; }
+    .total-line.final { font-size: 22px; font-weight: 850; margin: 18px 0; }
+    .checkout { width: 100%; border: 0; padding: 15px; border-radius: 14px; background: var(--orange); color: white; font-weight: 800; }
+    .checkout:disabled { opacity: .5; cursor: not-allowed; }
+    .cart-empty { text-align: center; color: var(--muted); padding: 40px 10px; }
+    .modal { position: fixed; inset: 0; z-index: 60; display: none; place-items: center; padding: 18px; background: rgba(30,20,15,.48); }
+    .modal.open { display: grid; }
+    .modal-card { width: min(470px,100%); background: var(--cream); border-radius: 22px; padding: 25px; }
+    .modal-card h2 { margin-bottom: 8px; }
+    .modal-card p { color: var(--muted); line-height: 1.7; font-size: 14px; }
+    .modal-card label { display: block; margin: 14px 0 6px; font-size: 13px; font-weight: 700; }
+    .modal-card input, .modal-card select { width: 100%; border: 1px solid var(--line); background: white; padding: 12px; border-radius: 10px; outline-color: var(--orange); }
+    .modal-actions { display: flex; gap: 10px; margin-top: 20px; }
+    .secondary-button { border: 1px solid var(--line); background: white; color: var(--brown); padding: 12px 16px; border-radius: 12px; }
+    @media (max-width: 850px) {
+      .products { grid-template-columns: repeat(2,1fr); }
+      .categories { grid-template-columns: repeat(2,1fr); }
+      .hero-panel { grid-template-columns: 1fr 1fr; }
+      .benefits { grid-template-columns: 1fr; gap: 20px; }
+      .brand { min-width: auto; }
+      .brand small { display: none; }
+    }
+    @media (max-width: 580px) {
+      .container { width: min(100% - 24px,1120px); }
+      .nav { min-height: 68px; gap: 10px; flex-wrap: wrap; padding: 10px 0; }
+      .brand strong { font-size: 18px; }
+      .brand-mark { width: 38px; height: 38px; font-size: 21px; }
+      .search { order: 3; flex-basis: 100%; }
+      .cart-button { margin-left: auto; padding: 10px 12px; }
+      .hero { padding-top: 20px; }
+      .hero-panel { grid-template-columns: 1fr; padding: 25px; gap: 20px; }
+      .hero-image { height: 190px; }
+      h1 { font-size: 37px; }
+      .category { padding: 11px; gap: 9px; }
+      .category-emoji { width: 40px; height: 40px; font-size: 21px; }
+      .category strong { font-size: 13px; }
+      .category small { font-size: 11px; }
+      .products { gap: 11px; }
+      .product-body { padding: 11px; }
+      .product-body h3 { font-size: 14px; }
+      .price { font-size: 19px; }
+      .section-heading { align-items: start; flex-direction: column; }
+      .footer-inner { align-items: start; flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container nav">
+      <a class="brand" href="#" aria-label="食光 Foodie 首頁">
+        <span class="brand-mark">🍴</span>
+        <span><strong>食光 Foodie</strong><small>每一口，都是好時光</small></span>
+      </a>
+      <label class="search" aria-label="搜尋商品">
+        <span>⌕</span>
+        <input id="searchInput" type="search" placeholder="搜尋美食、甜點、飲品……">
+      </label>
+      <button class="cart-button" id="openCart">🛒 購物車 <span class="cart-count" id="cartCount">0</span></button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container">
+        <div class="hero-panel">
+          <div>
+            <div class="eyebrow">DISCOVER YOUR FLAVOR</div>
+            <h1>今天，想吃點<br>什麼好料？</h1>
+            <p>從在地台灣小吃到療癒系甜點，精選好味道一次逛。把喜歡的美食加入購物車，讓美味輕鬆到你身邊。</p>
+            <a class="primary-button" href="#products">探索人氣美食　→</a>
+          </div>
+          <img class="hero-image" src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=1000&q=85" alt="新鮮豐盛的美食餐點">
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-heading">
+          <div><h2>探索美食分類</h2><p>選擇喜歡的類型，發現下一份美味</p></div>
+        </div>
+        <div class="categories" id="categories">
+          <button class="category active" data-category="全部"><span class="category-emoji">🍱</span><span><strong>全部美食</strong><small>探索所有好味道</small></span></button>
+          <button class="category" data-category="台式美食"><span class="category-emoji">🍚</span><span><strong>台式美食</strong><small>熟悉的家鄉味</small></span></button>
+          <button class="category" data-category="甜點蛋糕"><span class="category-emoji">🍰</span><span><strong>甜點蛋糕</strong><small>甜蜜療癒時光</small></span></button>
+          <button class="category" data-category="飲品茶飲"><span class="category-emoji">🧋</span><span><strong>飲品茶飲</strong><small>一口清爽好心情</small></span></button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="products">
+      <div class="container">
+        <div class="section-heading">
+          <div><h2>人氣美食推薦</h2><p>本週精選，讓每一餐都更有期待</p></div>
+          <div class="toolbar">
+            <select id="sortSelect" aria-label="商品排序">
+              <option value="featured">推薦排序</option>
+              <option value="low">價格由低到高</option>
+              <option value="high">價格由高到低</option>
+              <option value="name">商品名稱</option>
+            </select>
+          </div>
+        </div>
+        <div class="products" id="productGrid"></div>
+        <div class="empty" id="emptyState">找不到符合條件的商品，試試其他關鍵字吧！</div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="benefits">
+          <div class="benefit"><span class="benefit-icon">🚚</span><div><strong>美味安心配送</strong><span>支援宅配商品展示，配送方式可依商家設定。</span></div></div>
+          <div class="benefit"><span class="benefit-icon">🥬</span><div><strong>嚴選好味道</strong><span>集結人氣餐點、甜點與特色食品。</span></div></div>
+          <div class="benefit"><span class="benefit-icon">💛</span><div><strong>簡單輕鬆購物</strong><span>快速搜尋、加入購物車，結帳流程一目了然。</span></div></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-inner">
+      <div><div style="font-size:20px;font-weight:800">🍴 食光 Foodie</div><p>每一口，都是好時光。</p></div>
+      <p>© <span id="year"></span> Foodie 美食購物商城｜網站展示原型</p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <div class="cart-panel" id="cartPanel" aria-hidden="true">
+    <div class="cart-backdrop" id="cartBackdrop"></div>
+    <aside class="cart-drawer" role="dialog" aria-modal="true" aria-labelledby="cartTitle">
+      <div class="cart-head"><h2 id="cartTitle">🛒 我的購物車</h2><button class="close-button" id="closeCart" aria-label="關閉購物車">×</button></div>
+      <div class="cart-items" id="cartItems"></div>
+      <div class="cart-total">
+        <div class="total-line"><span>商品小計</span><strong id="subtotal">NT$ 0</strong></div>
+        <div class="total-line"><span>運費</span><span id="shipping">結帳時確認</span></div>
+        <div class="total-line final"><span>合計</span><strong id="total">NT$ 0</strong></div>
+        <button class="checkout" id="checkoutButton" disabled>前往結帳</button>
+        <p style="font-size:11px;color:var(--muted);line-height:1.6;margin-bottom:0">此為前端展示原型，尚未串接真實付款、會員或訂單後端。</p>
+      </div>
+    </aside>
+  </div>
+
+  <div class="modal" id="checkoutModal" role="dialog" aria-modal="true" aria-labelledby="checkoutTitle">
+    <div class="modal-card">
+      <h2 id="checkoutTitle">完成訂購資料</h2>
+      <p>填寫基本資訊以預覽訂單。此展示版不會收取款項或傳送個人資料。</p>
+      <form id="checkoutForm">
+        <label for="customerName">收件人</label><input id="customerName" name="customerName" required placeholder="請輸入姓名">
+        <label for="customerPhone">聯絡電話</label><input id="customerPhone" name="customerPhone" required inputmode="tel" placeholder="請輸入電話">
+        <label for="delivery">取貨／配送方式</label>
+        <select id="delivery" name="delivery"><option>宅配（展示）</option><option>自取（展示）</option></select>
+        <div class="modal-actions"><button type="button" class="secondary-button" id="cancelCheckout">返回購物車</button><button class="primary-button" type="submit">確認建立展示訂單</button></div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const products = [
+      {id:1,name:"台式香酥雞腿便當",category:"台式美食",price:120,tag:"人氣熱銷",desc:"酥香雞腿搭配家常配菜",emoji:"🍱",image:"https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=700&q=80"},
+      {id:2,name:"草莓鮮奶油蛋糕",category:"甜點蛋糕",price:180,tag:"甜點推薦",desc:"酸甜草莓與綿密奶油",emoji:"🍰",image:"https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=700&q=80"},
+      {id:3,name:"黑糖珍珠鮮奶茶",category:"飲品茶飲",price:65,tag:"人氣飲品",desc:"濃郁奶香與Q彈珍珠",emoji:"🧋",image:"https://images.unsplash.com/photo-1558857563-b371033873b8?auto=format&fit=crop&w=700&q=80"},
+      {id:4,name:"手工鮮肉水餃",category:"台式美食",price:150,tag:"家常必備",desc:"冷凍宅配，簡單料理",emoji:"🥟",image:"https://images.unsplash.com/photo-156324运行?auto=format&fit=crop&w=700&q=80"},
+      {id:5,name:"日式鮭魚丼飯",category:"台式美食",price:220,tag:"精選餐點",desc:"鮮香鮭魚與清爽配料",emoji:"🍣",image:"https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=700&q=80"},
+      {id:6,name:"檸檬氣泡飲",category:"飲品茶飲",price:75,tag:"清爽推薦",desc:"酸甜清新，沁涼解渴",emoji:"🍋",image:"https://images.unsplash.com/photo-1513558161293-cdaf765edfd7?auto=format&fit=crop&w=700&q=80"},
+      {id:7,name:"可可布朗尼",category:"甜點蛋糕",price:95,tag:"午後甜點",desc:"濃郁可可與濕潤口感",emoji:"🍫",image:"https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=700&q=80"},
+      {id:8,name:"香烤可頌三明治",category:"台式美食",price:110,tag:"輕食推薦",desc:"酥脆可頌與新鮮生菜",emoji:"🥪",image:"https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=700&q=80"}
+    ];
+
+    // 若某張遠端圖片無法載入，顯示可辨識的 emoji 圖片替代。
+    function fallbackImage(emoji) {
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="480" viewBox="0 0 600 480"><rect width="600" height="480" fill="#fff0df"/><text x="300" y="275" font-size="150" text-anchor="middle">${emoji}</text><text x="300" y="390" font-size="24" fill="#8d7466" text-anchor="middle">Foodie 美食精選</text></svg>`;
+      return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg);
+    }
+    const cart = new Map();
+    let activeCategory = "全部";
+    const productGrid = document.getElementById("productGrid");
+    const searchInput = document.getElementById("searchInput");
+    const sortSelect = document.getElementById("sortSelect");
+    const toast = document.getElementById("toast");
+    let toastTimer;
+
+    function money(amount) { return "NT$ " + amount.toLocaleString("zh-TW"); }
+    function visibleProducts() {
+      let list = products.filter(p => (activeCategory === "全部" || p.category === activeCategory) &&
+        (p.name + p.category + p.desc).toLowerCase().includes(searchInput.value.trim().toLowerCase()));
+      if (sortSelect.value === "low") list.sort((a,b) => a.price-b.price);
+      if (sortSelect.value === "high") list.sort((a,b) => b.price-a.price);
+      if (sortSelect.value === "name") list.sort((a,b) => a.name.localeCompare(b.name, "zh-Hant"));
+      return list;
+    }
+    function renderProducts() {
+      const list = visibleProducts();
+      productGrid.innerHTML = list.map(p => `
+        <article class="product">
+          <div class="product-image-wrap">
+            <img class="product-image" src="${p.image}" alt="${p.name}" loading="lazy" data-emoji="${p.emoji}">
+            <span class="tag">${p.tag}</span>
+          </div>
+          <div class="product-body">
+            <h3>${p.name}</h3>
+            <div class="product-desc">${p.desc}</div>
+            <div class="product-bottom">
+              <div class="price"><small>NT$</small> ${p.price}</div>
+              <button class="add-button" data-add="${p.id}" aria-label="將${p.name}加入購物車">+</button>
+            </div>
+          </div>
+        </article>`).join("");
+      document.getElementById("emptyState").style.display = list.length ? "none" : "block";
+      productGrid.querySelectorAll("img").forEach(img => img.addEventListener("error", () => {
+        img.src = fallbackImage(img.dataset.emoji || "🍴");
+      }, {once:true}));
+    }
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove("show"), 2200);
+    }
+    function addToCart(id) {
+      cart.set(id, (cart.get(id) || 0) + 1);
+      renderCart();
+      showToast("已加入購物車！");
+    }
+    function changeQty(id, delta) {
+      const next = (cart.get(id) || 0) + delta;
+      if (next <= 0) cart.delete(id); else cart.set(id, next);
+      renderCart();
+    }
+    function renderCart() {
+      const count = [...cart.values()].reduce((sum,n) => sum+n,0);
+      const subtotal = [...cart.entries()].reduce((sum,[id,qty]) => sum + products.find(p=>p.id===id).price*qty,0);
+      document.getElementById("cartCount").textContent = count;
+      document.getElementById("subtotal").textContent = money(subtotal);
+      document.getElementById("total").textContent = money(subtotal);
+      document.getElementById("checkoutButton").disabled = count === 0;
+      const container = document.getElementById("cartItems");
+      if (!count) {
+        container.innerHTML = '<div class="cart-empty"><div style="font-size:48px">🛍️</div><p>購物車還是空的</p><p>去挑幾樣喜歡的美食吧！</p></div>';
+        return;
+      }
+      container.innerHTML = [...cart.entries()].map(([id,qty]) => {
+        const p = products.find(item => item.id === id);
+        return `<div class="cart-item">
+          <img src="${p.image}" alt="${p.name}" data-emoji="${p.emoji}">
+          <div><strong>${p.name}</strong><small>${money(p.price)} / 份</small>
+            <div class="qty"><button data-qty="${id}" data-delta="-1" aria-label="減少數量">−</button><span>${qty}</span><button data-qty="${id}" data-delta="1" aria-label="增加數量">+</button></div>
+          </div>
+          <button class="remove" data-remove="${id}">移除</button>
+        </div>`;
+      }).join("");
+      container.querySelectorAll("img").forEach(img => img.addEventListener("error", () => {
+        img.src = fallbackImage(img.dataset.emoji || "🍴");
+      }, {once:true}));
+    }
+    function openCart() {
+      document.getElementById("cartPanel").classList.add("open");
+      document.getElementById("cartPanel").setAttribute("aria-hidden","false");
+      document.body.style.overflow = "hidden";
+    }
+    function closeCart() {
+      document.getElementById("cartPanel").classList.remove("open");
+      document.getElementById("cartPanel").setAttribute("aria-hidden","true");
+      document.body.style.overflow = "";
+    }
+
+    document.getElementById("categories").addEventListener("click", e => {
+      const button = e.target.closest("[data-category]");
+      if (!button) return;
+      activeCategory = button.dataset.category;
+      document.querySelectorAll(".category").forEach(el => el.classList.toggle("active", el === button));
+      renderProducts();
+    });
+    productGrid.addEventListener("click", e => {
+      const button = e.target.closest("[data-add]");
+      if (button) addToCart(Number(button.dataset.add));
+    });
+    searchInput.addEventListener("input", renderProducts);
+    sortSelect.addEventListener("change", renderProducts);
+    document.getElementById("openCart").addEventListener("click", openCart);
+    document.getElementById("closeCart").addEventListener("click", closeCart);
+    document.getElementById("cartBackdrop").addEventListener("click", closeCart);
+    document.getElementById("cartItems").addEventListener("click", e => {
+      const qty = e.target.closest("[data-qty]");
+      const remove = e.target.closest("[data-remove]");
+      if (qty) changeQty(Number(qty.dataset.qty), Number(qty.dataset.delta));
+      if (remove) { cart.delete(Number(remove.dataset.remove)); renderCart(); }
+    });
+    document.getElementById("checkoutButton").addEventListener("click", () => {
+      closeCart();
+      document.getElementById("checkoutModal").classList.add("open");
+    });
+    document.getElementById("cancelCheckout").addEventListener("click", () => {
+      document.getElementById("checkoutModal").classList.remove("open");
+      openCart();
+    });
+    document.getElementById("checkoutModal").addEventListener("click", e => {
+      if (e.target.id === "checkoutModal") e.currentTarget.classList.remove("open");
+    });
+    document.getElementById("checkoutForm").addEventListener("submit", e => {
+      e.preventDefault();
+      const name = document.getElementById("customerName").value.trim();
+      const total = [...cart.entries()].reduce((sum,[id,qty]) => sum + products.find(p=>p.id===id).price*qty,0);
+      const orderNo = "FD" + Date.now().toString().slice(-6);
+      document.getElementById("checkoutModal").classList.remove("open");
+      cart.clear();
+      renderCart();
+      e.target.reset();
+      showToast(`展示訂單 ${orderNo} 已建立，${name}，合計 ${money(total)}`);
+    });
+    document.addEventListener("keydown", e => {
+      if (e.key === "Escape") { closeCart(); document.getElementById("checkoutModal").classList.remove("open"); }
+    });
+    document.getElementById("year").textContent = new Date().getFullYear();
+    renderProducts();
+    renderCart();
+  </script>
+</body>
+</html>
